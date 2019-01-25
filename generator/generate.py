@@ -21,7 +21,7 @@ class Renderer(object):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("mode", choices=["storage", "director", "client"])
+    p.add_argument("mode", choices=["storage", "director", "client", "console"])
     p.add_argument('--destination', '-d', action="store", default=None)
     
     ns = p.parse_args()
