@@ -1,0 +1,35 @@
+version: '3.5'
+services:
+  sql:
+    image: mysql:5.7
+    volumes:
+      - ./data/sql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bacula-db
+      MYSQL_USER: bacula-user
+      MYSQL_PASSWORD: bacula-password
+  director:
+    image: glorpen/bacula:1.0-director
+    depends_on:
+      - storage
+      - client-1
+      - sql
+    volumes:
+      - ./bacula-dir.conf:/etc/bacula/bacula-dir.conf
+  storage:
+    image: glorpen/bacula:1.0-storage
+    volumes:
+      - ./bacula-sd.conf:/etc/bacula/bacula-sd.conf
+  client-1:
+    image: glorpen/bacula:1.0-client
+    volumes:
+      - ./bacula-fd.conf:/etc/bacula/bacula-fd.conf
+  console:
+    image: glorpen/bacula:1.0-console
+    depends_on:
+      - director
+    volumes:
+      - ./bconsole.conf:/etc/bacula/bconsole.conf
+
+#db_user=bacula-user db_name=bacula-db db_password=bacula-password /etc/bacula/scripts/make_mysql_tables -uroot -proot
