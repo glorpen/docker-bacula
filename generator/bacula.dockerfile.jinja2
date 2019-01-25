@@ -1,0 +1,12 @@
+FROM alpine:3.8
+
+RUN apk update && apk add bacula-libs && rm /var/cache/apk/*
+
+{% if mode == "client" %}
+RUN apk update && apk add bacula-client && rm /var/cache/apk/*
+{% else %}
+RUN apk update && apk add bacula && rm /var/cache/apk/*
+{% if mode == "director" %}
+RUN apk update && apk add bacula-mysql && rm /var/cache/apk/*
+{% endif %}
+{% endif %}
