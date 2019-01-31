@@ -114,13 +114,13 @@ RUN ln -sf libbaccats-postgresql.so {{ install_dir}}/lib/libbaccats-{{ bacula_ve
 ENTRYPOINT [
 {%- block entrypoint -%}
 {%- if bacula_component.startswith("director") -%}
-"/usr/sbin/bacula-dir"
+"/opt/bacula/bin/bacula-dir"
 {%- elif bacula_component == "storage" -%}
-"/usr/sbin/bacula-sd"
+"/opt/bacula/bin/bacula-sd"
 {%- elif bacula_component == "client" -%}
-"/usr/sbin/bacula-fd"
+"/opt/bacula/bin/bacula-fd"
 {%- elif bacula_component == "console" -%}
-"/usr/sbin/bconsole"
+"/opt/bacula/bin/bconsole"
 {%- endif -%}
 {%- endblock -%}
 ]

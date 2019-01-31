@@ -14,7 +14,7 @@ targets:
       system: "alpine"
   "director":
       base_image: "alpine:3.8"
-      bacula_component: "director-mysql"
+      bacula_component: "director-mysql" # director-sqlite director-postgresql
       system: "alpine"
   "storage":
       base_image: "alpine:3.8"
