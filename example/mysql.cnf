@@ -1,5 +1,5 @@
 [mysqld]
-log-bin = something-log
+log-bin = something-bin
 expire-logs-days = 14
 max-binlog-size  = 64M
 server-id        = 1
