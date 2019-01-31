@@ -1,0 +1,22 @@
+targets:
+  mysql_client:
+      base_image: "mysql:8"
+      system: "debian"
+      bacula_component: "client"
+      template: "mysql"
+  client:
+      base_image: "alpine:3.8"
+      bacula_component: "client"
+      system: "alpine"
+  "console":
+      base_image: "alpine:3.8"
+      bacula_component: "console"
+      system: "alpine"
+  "director":
+      base_image: "alpine:3.8"
+      bacula_component: "director-mysql"
+      system: "alpine"
+  "storage":
+      base_image: "alpine:3.8"
+      bacula_component: "storage"
+      system: "alpine"

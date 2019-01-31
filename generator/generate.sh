@@ -11,6 +11,6 @@ function _run(){
 if [ ! -d "${root_dir}"/env ];
 then
 	_run python -m venv ./env --system-site-packages
-	_run ./env/bin/pip install jinja2
+	_run ./env/bin/pip install jinja2 glorpen-config pyyaml
 fi
 _run ./env/bin/python3 generate.py "$@"

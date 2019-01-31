@@ -1,0 +1,13 @@
+{% extends "base.dockerfile.jinja2" %}
+
+{% set packages_cmd_install %}apt-get update && apt-get install -y --no-install-recommends{% endset %}
+{% set packages_cmd_clean %}rm -rf /var/lib/apt/lists/*{% endset %}
+
+{% set packages_base | oneline %}
+zlib1g liblzo2-2 libacl1 libncursesw5 openssl libreadline7 libstdc++6
+{% endset %}
+
+{% set packages_base_dev | oneline %}
+curl patch autoconf file gcc g++ make zlib1g-dev liblzo2-dev
+libacl1-dev libncursesw5-dev libssl-dev libreadline-dev libstdc++-6-dev
+{% endset %}

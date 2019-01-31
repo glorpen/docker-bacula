@@ -1,0 +1,15 @@
+{% extends "base.dockerfile.jinja2" %}
+
+{% set packages_cmd_install %}apk add --no-cache{% endset %}
+{% set packages_cmd_clean %}rm -rfv /var/cache/apk/*{% endset %}
+
+{% set packages_base %}zlib lzo acl ncurses libressl readline libstdc++{% endset %}
+{% set packages_base_dev | oneline %}
+curl
+autoconf mariadb-connector-c-dev ncurses-dev libressl-dev postgresql-dev sqlite-dev
+zlib-dev lzo-dev acl-dev gcc libc-dev g++ bc file make readline-dev
+{% endset %}
+
+{% set packages_libs_mysql %}mariadb-connector-c{% endset %}
+{% set packages_libs_sqlite %}sqlite-libs{% endset %}
+{% set packages_libs_postgresql %}postgresql-libs{% endset %}

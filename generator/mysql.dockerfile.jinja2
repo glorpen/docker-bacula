@@ -1,0 +1,11 @@
+{% extends "debian.dockerfile.jinja2" %}
+
+{% set packages_post_additional %}pbzip2{% endset %}
+
+{% block post %}
+{{ super() }}
+COPY mysql/bacula-backup.sh /opt/bacula/bin/bacula-mysql-backup
+COPY mysql/entrypoint.sh /opt/bacula/bin/bacula-mysql-entrypoint
+{% endblock %}
+
+{% block entrypoint %}"/opt/bacula/bin/bacula-mysql-entrypoint", {{ super() }}{% endblock %}
