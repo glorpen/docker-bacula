@@ -3,7 +3,7 @@
 set -e
 
 # Directory to store backups in
-dumpdir="<%= $datadir %>"
+dumpdir="${BACKUP_DIR-/var/lib/mysql}"
 # which backup level should be taken
 level="$1"
 
@@ -13,7 +13,7 @@ case "$level" in
       tstamp=$(date +%Y%m%d-%H%M%S)
       target="${dumpdir}/backup-${level}.${tstamp}.sql.bz2"
       echo "Dumping changes to ${target}"
-      mysqldump --defaults-extra-file=/root/.my.cnf --single-transaction --flush-logs --master-data=2 --all-databases --delete-master-logs --routines --events --flush-privileges | /usr/bin/pbzip2 -9 > "${target}"
+      mysqldump --defaults-extra-file=/root/.my.cnf --column-statistics=0 --single-transaction --flush-logs --master-data=2 --all-databases --delete-master-logs --routines --events --flush-privileges | /usr/bin/pbzip2 -9 > "${target}"
       ;;
    "Incremental"):
       echo "Performing incremental backup"
