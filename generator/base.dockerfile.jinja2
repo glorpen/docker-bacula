@@ -66,7 +66,7 @@ RUN cd /usr/src/bacula-root/{{ install_dir }} \
 RUN cd /usr/src/bacula-root/{{ install_dir }} \
 	&& install bin/bacula-fd bin/bfdjson {{ install_dir }}/bin/ \
 	&& install etc/bacula-fd.conf {{ install_dir }}/etc/ \
-	&& find ./lib -regex '.*/lib\(bacfind\|bac\|baccfg\)[0-9.-]*.so' -exec mv -v {} {{ install_dir }}/lib/ \; \
+	&& find ./lib \( -regex '.*/lib\(bacfind\|bac\|baccfg\)[0-9.-]*.so' -or -name "*-fd.so" \) -exec mv -v {} {{ install_dir }}/lib/ \; \
 	&& mv ./var/lib {{ install_dir }}/var/lib
 {% endif %}
 
@@ -74,7 +74,7 @@ RUN cd /usr/src/bacula-root/{{ install_dir }} \
 RUN cd /usr/src/bacula-root/{{ install_dir }} \
 	&& install bin/bacula-sd {{ install_dir }}/bin/ \
 	&& install etc/bacula-sd.conf {{ install_dir }}/etc/ \
-	&& find ./lib -regex '.*/lib\(bacsd\|bac\|baccfg\)[0-9.-]*.so' -exec mv -v {} {{ install_dir }}/lib/ \; \
+	&& find ./lib \( -regex '.*/lib\(bacsd\|bac\|baccfg\)[0-9.-]*.so' -or -name "*-sd.so" \) -exec mv -v {} {{ install_dir }}/lib/ \; \
 	&& mv ./var/lib {{ install_dir }}/var/lib
 {% endif %}
 
@@ -82,8 +82,9 @@ RUN cd /usr/src/bacula-root/{{ install_dir }} \
 RUN cd /usr/src/bacula-root/{{ install_dir }} \
 	&& install bin/bacula-dir {{ install_dir }}/bin/ \
 	&& install etc/bacula-dir.conf {{ install_dir }}/etc/ \
-	&& find ./lib -regex '.*/lib\(bacfind\|bac\|baccfg\|baccats.*\|bacsql\)[0-9.-]*.so' -exec mv -v {} {{ install_dir }}/lib/ \; \
+	&& find ./lib \( -regex '.*/lib\(bacfind\|bac\|baccfg\|baccats.*\|bacsql\)[0-9.-]*.so'  -or -name "*-dir.so" \) -exec mv -v {} {{ install_dir }}/lib/ \; \
 	&& mv ./var/lib {{ install_dir }}/var/lib \
+	&& mv ./etc/scripts {{ install_dir }}/etc/scripts \
 	&& rm {{ install_dir }}/lib/libbaccats-{{ bacula_version }}.so
 {% endif %}
 
