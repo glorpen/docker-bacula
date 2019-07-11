@@ -1,22 +1,30 @@
 targets:
-  mysql_client:
-      base_image: "mysql:8"
-      system: "debian"
-      bacula_component: "client"
-      template: "mysql"
-  client:
-      base_image: "alpine:3.8"
-      bacula_component: "client"
-      system: "alpine"
-  "console":
-      base_image: "alpine:3.8"
-      bacula_component: "console"
-      system: "alpine"
-  "director":
-      base_image: "alpine:3.8"
-      bacula_component: "director-mysql" # director-sqlite director-postgresql
-      system: "alpine"
-  "storage":
-      base_image: "alpine:3.8"
-      bacula_component: "storage"
-      system: "alpine"
+    "mysql_client":
+        base_image: "mysql:8"
+        system: "debian"
+        bacula_component: "client"
+        template: "mysql"
+    "client":
+        base_image: "alpine:3.8"
+        bacula_component: "client"
+        system: "alpine"
+    "console":
+        base_image: "alpine:3.8"
+        bacula_component: "console"
+        system: "alpine"
+    "storage":
+        base_image: "alpine:3.8"
+        bacula_component: "storage"
+        system: "alpine"
+    "director-mysql":
+        base_image: "alpine:3.8" #segfaults on 3.9
+        bacula_component: "director-mysql"
+        system: "alpine"
+    "director-sqlite":
+        base_image: "alpine:3.8" #segfaults on 3.9
+        bacula_component: "director-sqlite"
+        system: "alpine"
+    "director-postgresql":
+        base_image: "alpine:3.8" #segfaults on 3.9
+        bacula_component: "director-postgresql"
+        system: "alpine"

@@ -11,30 +11,36 @@ services:
       MYSQL_USER: bacula-user
       MYSQL_PASSWORD: bacula-password
   director:
-    image: glorpen/bacula/director:latest
+    image: glorpen/bacula-director:latest-mysql
+    # cap_add:
+    #   - SYS_PTRACE
+    # security_opt:
+    #   - seccomp=unconfined
     depends_on:
       - storage
       - client-1
       - sql
+    # command: ['-fP', '-d', '100']
     volumes:
       - ./bacula-dir.conf:/opt/bacula/etc/bacula-dir.conf
   storage:
-    image: glorpen/bacula/storage:latest
+    image: glorpen/bacula-storage:latest
     volumes:
       - ./bacula-sd.conf:/opt/bacula/etc/bacula-sd.conf
       - ./data/backup:/srv/backup
   client-1:
-    image: glorpen/bacula/client:latest
+    image: glorpen/bacula-client:latest
     volumes:
       - ./bacula-fd.conf:/opt/bacula/etc/bacula-fd.conf
   console:
-    image: glorpen/bacula/console:latest
+    image: glorpen/bacula-console:latest
     depends_on:
       - director
-    volumes:
-      - ./bconsole.conf:/opt/bacula/etc/bconsole.conf
+    environment:
+      DIR_PASSWORD: 'XgrA0Jf6eVjOsA3AgNAxgYYFGLougAUbgo5im8MfPlOs'
+      DIR_ADDRESS: 'director'
   client-mysql:
-    image: glorpen/bacula/client-mysql:latest
+    image: glorpen/bacula-client-mysql:latest
     environment:
       MYSQL_PASSWORD: root
       MYSQL_HOST: sql

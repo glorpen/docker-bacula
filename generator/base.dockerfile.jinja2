@@ -6,9 +6,8 @@ FROM base as dev
 
 RUN {{ packages_cmd_install }} {{ packages_base_dev }} && {{ packages_cmd_clean }}
 
-RUN curl -k {{ bacula_url }} > bacula.tar.gz \
-	&& mkdir -p /usr/src/bacula \
-	&& tar -C /usr/src/bacula -xpf bacula.tar.gz --strip-components 1
+RUN mkdir -p /usr/src/bacula \
+	&& curl -Lk {{ bacula_url }} | tar -C /usr/src/bacula -xpzf - --strip-components 1
 
 WORKDIR /usr/src/bacula
 
@@ -111,6 +110,17 @@ RUN ln -sf libbaccats-postgresql.so {{ install_dir}}/lib/libbaccats-{{ bacula_ve
 {% endif %}
 {% endif %}
 
+RUN chmod a+rwX -R /opt/bacula/run
+
+{% if bacula_component != "console" -%}
+RUN chmod a+rwX -R /opt/bacula/var
+{%- endif %}
+
+{% if bacula_component == "console" -%}
+RUN chmod a+rwX -R /opt/bacula/etc/
+COPY console/entrypoint.sh /opt/bacula/bin/docker-entrypoint
+{%- endif %}
+
 ENTRYPOINT [
 {%- block entrypoint -%}
 {%- if bacula_component.startswith("director") -%}
@@ -120,7 +130,7 @@ ENTRYPOINT [
 {%- elif bacula_component == "client" -%}
 "/opt/bacula/bin/bacula-fd"
 {%- elif bacula_component == "console" -%}
-"/opt/bacula/bin/bconsole"
+"/opt/bacula/bin/docker-entrypoint", "/opt/bacula/bin/bconsole"
 {%- endif -%}
 {%- endblock -%}
 ]

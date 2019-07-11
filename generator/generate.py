@@ -7,8 +7,8 @@ from glorpen.config import Config as GConfig
 import glorpen.config.loaders as loaders
 import glorpen.config.fields.simple as fields_simple
 
-bacula_version = "9.4.1"
-bacula_url = "https://blog.bacula.org/download/6572/"
+bacula_version = "9.4.4"
+bacula_url = "https://sourceforge.net/projects/bacula/files/bacula/{v}/bacula-{v}.tar.gz/download".format(v=bacula_version)
 
 re_line = re.compile("(\s*\n\s*)+")
 def filter_oneline(value):
