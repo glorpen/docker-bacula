@@ -1,6 +1,11 @@
 targets:
-    "mysql_client":
+    "mysql_client-8":
         base_image: "mysql:8"
+        system: "debian"
+        bacula_component: "client"
+        template: "mysql"
+    "mysql_client-5.7":
+        base_image: "mysql:5.7"
         system: "debian"
         bacula_component: "client"
         template: "mysql"

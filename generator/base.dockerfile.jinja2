@@ -36,8 +36,9 @@ RUN cd autoconf \
 		--disable-nls \
 		--with-openssl=/usr/include/openssl \
 		{% if bacula_component in ["console", "client"] %}--enable-client-only {% else %}--with-postgresql --with-mysql --with-sqlite3 {% endif -%}
-		--with-scriptdir=/opt/bacula/etc/scripts \
+		--with-scriptdir=/opt/bacula/share \
 		--with-working-dir=/opt/bacula/var/lib \
+		--with-bsrdir=/opt/bacula/var/bsr \
 		--with-dir-user=root \
 		--with-dir-group=root \
 		--with-archivedir=/opt/bacula/var/lib/archive \
@@ -52,7 +53,7 @@ RUN make -j$(nproc)
 
 RUN make DESTDIR=/usr/src/bacula-root install
 
-RUN mkdir -p /opt/bacula/bin /opt/bacula/lib /opt/bacula/etc /opt/bacula/var /opt/bacula/run
+RUN mkdir -p /opt/bacula/bin /opt/bacula/lib /opt/bacula/etc /opt/bacula/var/spool /opt/bacula/var/bsr /opt/bacula/run
 
 {% if bacula_component == "console" %}
 RUN cd /usr/src/bacula-root/{{ install_dir }} \
@@ -83,8 +84,8 @@ RUN cd /usr/src/bacula-root/{{ install_dir }} \
 	&& install etc/bacula-dir.conf {{ install_dir }}/etc/ \
 	&& find ./lib \( -regex '.*/lib\(bacfind\|bac\|baccfg\|baccats.*\|bacsql\)[0-9.-]*.so'  -or -name "*-dir.so" \) -exec mv -v {} {{ install_dir }}/lib/ \; \
 	&& mv ./var/lib {{ install_dir }}/var/lib \
-	&& mv ./etc/scripts {{ install_dir }}/etc/scripts \
-	&& rm {{ install_dir }}/lib/libbaccats-{{ bacula_version }}.so
+	&& mv ./share {{ install_dir }}/share \
+	&& rm -rf {{ install_dir }}/lib/libbaccats-{{ bacula_version }}.so {{ install_dir }}/share/man {{ install_dir }}/share/doc
 {% endif %}
 
 RUN find {{ install_dir }} -iname "*.a" -delete \
@@ -94,6 +95,8 @@ RUN find {{ install_dir }} -iname "*.a" -delete \
 FROM base
 
 COPY --from=dev /opt/bacula /opt/bacula
+
+RUN chmod a+rwX -R /opt/bacula/run /opt/bacula/var
 
 {% if bacula_component.startswith("director") %}
 {% if "sqlite" in bacula_component %}
@@ -110,15 +113,9 @@ RUN ln -sf libbaccats-postgresql.so {{ install_dir}}/lib/libbaccats-{{ bacula_ve
 {% endif %}
 {% endif %}
 
-RUN chmod a+rwX -R /opt/bacula/run
-
-{% if bacula_component != "console" -%}
-RUN chmod a+rwX -R /opt/bacula/var
-{%- endif %}
-
-{% if bacula_component == "console" -%}
+{% if bacula_component in ["console", "client"] -%}
 RUN chmod a+rwX -R /opt/bacula/etc/
-COPY console/entrypoint.sh /opt/bacula/bin/docker-entrypoint
+COPY {{ bacula_component }}/entrypoint.sh /opt/bacula/bin/docker-entrypoint
 {%- endif %}
 
 ENTRYPOINT [
@@ -128,7 +125,7 @@ ENTRYPOINT [
 {%- elif bacula_component == "storage" -%}
 "/opt/bacula/bin/bacula-sd"
 {%- elif bacula_component == "client" -%}
-"/opt/bacula/bin/bacula-fd"
+"/opt/bacula/bin/docker-entrypoint", "/opt/bacula/bin/bacula-fd"
 {%- elif bacula_component == "console" -%}
 "/opt/bacula/bin/docker-entrypoint", "/opt/bacula/bin/bconsole"
 {%- endif -%}
